@@ -20,13 +20,53 @@ namespace GithubReviewCommentFetcher
                 .Add(new MediaTypeWithQualityHeaderValue("application/json"));
             this._client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RPLP", "1"));
         }
-        
+
+        public async Task<List<Issue>> GetPullRequestIssueAsync(string p_owner, string p_repository)
+        {
+            List<Issue> issues = new List<Issue>();
+
+            var jsonIssues = JArray.Parse(
+                GetRepositoryIssueCommentsJSONStringAsync(p_owner, p_repository).Result);
+
+            foreach (var issue in jsonIssues)
+            {
+                issues.Add(new Issue
+                {
+                    Username = issue["user"]["login"].ToString(),
+                    Body = issue["body"].ToString(),
+                    HTML_Url = issue["html_url"].ToString(),
+                });
+            }
+
+            return issues;
+        }
+
+        public async Task<List<Review>> GetPullRequestReviewCommentsAsync(string p_owner, string p_repository, int p_pullNumber)
+        {
+            List<Review> reviews = new List<Review>();
+
+            var jsonReviews = JArray.Parse(
+                GetPullRequestReviewsJSONStringAsync(p_owner, p_repository, p_pullNumber).Result);
+
+            foreach (var review in jsonReviews)
+            {
+                reviews.Add(new Review
+                {
+                    Username = review["user"]["login"].ToString(),
+                    Body = review["body"].ToString(),
+                    HTML_Url = review["html_url"].ToString(),
+                    Pull_Request_Url = review["pull_request_url"].ToString()
+                });
+            }
+
+            return reviews;
+        }
+
         public async Task<List<Comment>> GetPullRequestCommentsAsync(string p_owner, string p_repository)
         {
             List<Comment> comments = new List<Comment>();
 
             string content = GetPullRequestCommentsJSONStringAsync(p_owner, p_repository).Result;
-
             var jsonComments = JArray.Parse(
                 GetPullRequestCommentsJSONStringAsync(p_owner, p_repository).Result);
 
