@@ -1,7 +1,10 @@
-﻿HttpClient client = new HttpClient();
-client.BaseAddress = new Uri("https://api.github.com");
-client.DefaultRequestHeaders.Add("Accept", "application/json");
+﻿using GithubReviewCommentFetcher;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
 
-List<string> comments = new List<string>();
+GithubPRCommentFetcher fetcher = new GithubPRCommentFetcher();
 
+List<Comment> comments = await fetcher.GetPullRequestCommentsAsync("ThPaquet", "GithubReviewCommentFetcher");
 comments.ForEach(comment => Console.WriteLine(comment));
+
+//string commentsJson = fetcher.GetRepositoryIssueCommentsJSONStringAsync("ThPaquet", "GithubReviewCommentFetcher").Result;
