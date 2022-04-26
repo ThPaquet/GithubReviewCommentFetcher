@@ -10,5 +10,8 @@ GithubPRCommentFetcher fetcher = new GithubPRCommentFetcher();
 //List<Review> reviews = await fetcher.GetPullRequestReviewCommentsAsync("ThPaquet", "GithubReviewCommentFetcher", 1);
 //reviews.ForEach(review => Console.WriteLine(review));
 
-List<Issue> issues = await fetcher.GetPullRequestIssueAsync("ThPaquet", "GithubReviewCommentFetcher");
-issues.ForEach(issue => Console.WriteLine(issue));
+//List<Issue> issues = await fetcher.GetPullRequestIssueAsync("ThPaquet", "GithubReviewCommentFetcher");
+//issues.ForEach(issue => Console.WriteLine(issue));
+
+List<Pull> pulls = await fetcher.GetPullRequestsFromRepositoryAsync("ThPaquet", "GithubReviewCommentFetcher");
+pulls.ForEach(pull => Console.WriteLine(pull));

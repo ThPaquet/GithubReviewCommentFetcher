@@ -23,7 +23,7 @@ namespace GithubReviewCommentFetcher
                 $"  \"Body\" : \"{this.Body}\"\n" +
                 $"  \"Diff_Hunk\" : \"{this.Diff_Hunk}\"\n" +
                 $"  \"Path\" : \"{this.Path}\"\n" +
-                $"  \"Position\" : \"{this.Position}\"\n" +
+                $"  \"Position\" : {this.Position}\n" +
                 $"  \"PullRequestURL\" : \"{this.PullRequestURL}\"\n" +
                 $"}}";
         }

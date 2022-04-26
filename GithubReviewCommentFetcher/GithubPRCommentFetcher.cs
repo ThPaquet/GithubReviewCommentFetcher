@@ -21,6 +21,8 @@ namespace GithubReviewCommentFetcher
             this._client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RPLP", "1"));
         }
 
+
+
         public async Task<List<Issue>> GetPullRequestIssueAsync(string p_owner, string p_repository)
         {
             List<Issue> issues = new List<Issue>();
@@ -66,7 +68,6 @@ namespace GithubReviewCommentFetcher
         {
             List<Comment> comments = new List<Comment>();
 
-            string content = GetPullRequestCommentsJSONStringAsync(p_owner, p_repository).Result;
             var jsonComments = JArray.Parse(
                 GetPullRequestCommentsJSONStringAsync(p_owner, p_repository).Result);
 
@@ -86,6 +87,25 @@ namespace GithubReviewCommentFetcher
             return comments;
         }
 
+        public async Task<List<Pull>> GetPullRequestsFromRepositoryAsync(string p_owner, string p_repository)
+        {
+            List<Pull> pulls = new List<Pull>();
+
+            var jsonPulls = JArray.Parse(
+                GetPullRequestsJSONFromRepositoryAsync(p_owner, p_repository).Result);
+
+            foreach (var pull in jsonPulls)
+            {
+                pulls.Add(new Pull(p_owner, p_repository, Convert.ToInt32(pull["number"].ToString()))
+                {
+                    Username = pull["user"]["login"].ToString(),
+                    HTML_Url = pull["html_url"].ToString()
+                });
+            }
+
+            return pulls;
+        }
+
         public async Task<string> GetRepositoryIssueCommentsJSONStringAsync(string p_owner, string p_repository)
         {
             return await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/issues/comments")
@@ -101,6 +121,12 @@ namespace GithubReviewCommentFetcher
         public async Task<string> GetPullRequestCommentsJSONStringAsync(string p_owner, string p_repository)
         {
             return await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/pulls/comments")
+                .Result.Content.ReadAsStringAsync();
+        }
+
+        public async Task<string> GetPullRequestsJSONFromRepositoryAsync(string p_owner, string p_repository)
+        {
+            return await this._client.GetAsync($"/repos/{p_owner}/{p_repository}/pulls")
                 .Result.Content.ReadAsStringAsync();
         }
     }
